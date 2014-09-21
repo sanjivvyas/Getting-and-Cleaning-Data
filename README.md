@@ -43,6 +43,7 @@ Load data.table library
   library(data.table) 
   
 Load data
+
   fileUrl1 <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip" 
   download.file(fileUrl1, destfile = "Dataset.zip") 
   unzip("Dataset.zip") 
@@ -54,11 +55,13 @@ Load data
   subject_traindata <- read.table("./UCI HAR Dataset/train/subject_train.txt",header=FALSE) 
 
 Uses descriptive activity names to name the activities in the data set
+
   activities <- read.table("./UCI HAR Dataset/activity_labels.txt",header=FALSE,colClasses="character") 
   y_testdata$V1 <- factor(y_testdata$V1,levels=activities$V1,labels=activities$V2) 
   y_traindata$V1 <- factor(y_traindata$V1,levels=activities$V1,labels=activities$V2) 
 
 Appropriately labels the data set with descriptive variable names. 
+
   features <- read.table("./UCI HAR Dataset/features.txt",header=FALSE,colClasses="character") 
   colnames(x_testData)<-features$V2 
   colnames(x_trainData)<-features$V2 
@@ -68,6 +71,7 @@ Appropriately labels the data set with descriptive variable names.
   colnames(subject_traindata)<-c("Sub") 
 
 Merges the training and the test sets to create one data set.
+
   testData<-cbind(x_testData,y_testdata) 
   testData<-cbind(testData,subject_testdata) 
   trainData<-cbind(x_trainData,y_traindata) 
@@ -75,10 +79,12 @@ Merges the training and the test sets to create one data set.
   finalData<-rbind(testData,trainData) 
 
 Extracts only the measurements on the mean and standard deviation for each measurement. 
+
   finalData_mean<-sapply(finalData,mean,na.rm=TRUE) 
   finalData_sd<-sapply(finalData,sd,na.rm=TRUE) 
 
 From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
   finalData2<- data.table(finalData) 
   tidyset<-finalData2[,lapply(.SD,mean),by="Act,Sub"] 
   write.table(tidyset,file="tidy.txt",sep=",",row.names = FALSE)
